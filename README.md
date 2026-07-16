@@ -13,9 +13,6 @@ side of this). Three packages, one shared core:
 
 ## Install
 
-Not published to npm yet — see [Status](#status) below for how to consume it
-in the meantime. Once published:
-
 ```bash
 # Web (framework-agnostic)
 npm install @betterads/sdk-core
@@ -114,10 +111,8 @@ platform that's neither the DOM nor React Native.
 
 ## Status
 
-This is a new, unpublished project. Everything here builds, typechecks, and
-has unit test coverage (`pnpm test`), but:
-- **Not published to npm yet.** Consume it locally via the pnpm workspace,
-  or `npm pack`/`npm link` a package's `dist/` output, until it's published.
+Published to npm as `0.1.0`. Everything here builds, typechecks, and has
+unit test coverage (`pnpm test`), but:
 - **`@betterads/react-native` is untested on an actual device/simulator** —
   no RN project or device was available to validate against. It compiles
   and typechecks against `react-native-video`'s types; on-device playback
