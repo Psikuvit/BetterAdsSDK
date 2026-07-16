@@ -11,6 +11,107 @@ side of this). Three packages, one shared core:
 | [`@betterads/react`](./packages/react) | A thin `<AdPlayer />` wrapper around `sdk-core` for web React apps. |
 | [`@betterads/react-native`](./packages/react-native) | A thin `<AdPlayer />` wrapper for React Native, built on `react-native-video`, sharing all session/event logic with `sdk-core` via its `/headless` entry point. |
 
+## Install
+
+Not published to npm yet — see [Status](#status) below for how to consume it
+in the meantime. Once published:
+
+```bash
+# Web (framework-agnostic)
+npm install @betterads/sdk-core
+
+# React (web)
+npm install @betterads/react
+
+# React Native
+npm install @betterads/react-native react-native-video
+```
+
+## Usage
+
+### Plain web / DOM
+
+```ts
+import { BetterAds } from "@betterads/sdk-core";
+
+const handle = BetterAds.render(document.getElementById("ad-slot")!, {
+  baseUrl: "https://api.betterads.example.com",
+  siteKey: "site_xxx", // from POST /api/sites
+  adId: 123,
+  locale: "en", // optional
+});
+
+// later, e.g. on route change or component teardown:
+handle.destroy();
+```
+
+`render()` creates a session, injects a native `<video>` (muted-autoplay
+first, falling back to a tap-to-play overlay if even muted autoplay is
+blocked), tracks real accumulated visible time via `IntersectionObserver`,
+and reports the playback-event lifecycle (`IMPRESSION_START`, `QUARTILE_25`,
+`QUARTILE_50`, `QUARTILE_75`, `COMPLETE`, `ERROR`) automatically.
+`destroy()` tears everything down and, if playback started but never
+finished, best-effort reports an abandonment `ERROR`.
+
+### React (web)
+
+```tsx
+import { AdPlayer } from "@betterads/react";
+
+function AdSlot() {
+  return (
+    <AdPlayer
+      baseUrl="https://api.betterads.example.com"
+      siteKey="site_xxx"
+      adId={123}
+      locale="en"
+      style={{ aspectRatio: "16 / 9", width: "100%" }}
+      onEvent={(type, response) => console.log(type, response)}
+      onError={(error) => console.error(error)}
+    />
+  );
+}
+```
+
+`<AdPlayer />` calls `sdk-core`'s `render()` on mount and `destroy()` on
+unmount (or when `adId`/`siteKey`/`baseUrl`/`locale` change) — see the
+[full prop table](./packages/react) for every option.
+
+### React Native
+
+```tsx
+import { AdPlayer } from "@betterads/react-native";
+
+function AdSlot() {
+  return (
+    <AdPlayer
+      baseUrl="https://api.betterads.example.com"
+      siteKey="site_xxx"
+      adId={123}
+      locale="en"
+      style={{ width: "100%", aspectRatio: 16 / 9 }}
+      onEvent={(type, response) => console.log(type, response)}
+      onError={(error) => console.error(error)}
+    />
+  );
+}
+```
+
+Built on `react-native-video` (a peer dependency you must install and link
+yourself — works in bare RN and Expo with a dev client, not Expo Go).
+Same props as `@betterads/react`; see [its README](./packages/react-native)
+for how viewability is determined without `IntersectionObserver`.
+
+### Headless / custom players (`sdk-core/headless`)
+
+```ts
+import { AdSessionController, PlacementClient } from "@betterads/sdk-core/headless";
+```
+
+No-DOM session client and event state machine — what `@betterads/react-native`
+is built on. Use it directly if you're driving a custom video player on a
+platform that's neither the DOM nor React Native.
+
 ## Status
 
 This is a new, unpublished project. Everything here builds, typechecks, and
