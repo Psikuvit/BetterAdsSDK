@@ -1,0 +1,42 @@
+{
+  "name": "@betterads/react-native",
+  "version": "0.1.0",
+  "description": "React Native wrapper around @betterads/sdk-core/headless: an <AdPlayer /> component backed by react-native-video.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-native": ">=0.71",
+    "react-native-video": ">=6"
+  },
+  "dependencies": {
+    "@betterads/sdk-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "react": "^18.3.1",
+    "react-native": "^0.76.5",
+    "react-native-video": "^6.9.1",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.2",
+    "tsup": "^8.3.5"
+  }
+}
